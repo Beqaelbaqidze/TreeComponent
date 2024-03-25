@@ -1,6 +1,6 @@
 import { mainClass } from "./main.class.js";
-import { SearchClass } from "./search.class.js";
-import { CadTreeClass } from "./cadTree.class.js";
+// import { SearchClass } from "./search.class.js";
+// import { CadTreeClass } from "./cadTree.class.js";
 
 let vLable;
 let vBaseUrl;
@@ -33,18 +33,13 @@ document.head.appendChild(styleElement);
 
 mainRootElement.forEach((element, index) => {
   const RootElementNum = element.getAttribute("WFFNumber");
+
   console.log(RootElementNum);
   index = RootElementNum;
   if (RootElementNum) {
     if (element.getAttribute("vStyle") !== "false") {
       styleElement.innerHTML += variableStyle(index);
     }
-
-    // Added index parameter
-    // Your existing code here
-
-    // Now you can use the 'index' variable to access the index of each element
-    console.log("Index of current element:", index);
 
     vLable = element.getAttribute("labels");
     vBaseUrl = element.getAttribute("baseUrl");
@@ -57,6 +52,9 @@ mainRootElement.forEach((element, index) => {
     const TreeView = {
       rootElement: `#container${index}`,
       index: RootElementNum,
+      functions: element.getAttribute("onSelect")
+        ? element.getAttribute("onSelect")
+        : "",
       url: vBaseUrl + vTreeLink,
       method: "GET",
       headers: {
@@ -67,36 +65,38 @@ mainRootElement.forEach((element, index) => {
       changeIcons: ["iconSelected"],
       iconsUrl: vBaseUrl,
     };
-    const custom1 = {
-      rootElement: `#searchContainer${index}`,
-      index: RootElementNum,
-      url: vBaseUrl + vSearchLink,
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      label: [vLable],
-      icons: ["icon", "statusIcon"],
-      changeIcons: ["iconSelected"],
-      iconsUrl: vBaseUrl,
-    };
-    const custom2 = {
-      rootElement: `#containterIframe${index}`,
-      index: RootElementNum,
-      url: vBaseUrl + vIframLink,
-      method: "GET",
-    };
-
     const vMainClass = new mainClass(TreeView);
-    const vSearchClass = new SearchClass(custom1);
-    const vCadTreeClass = new CadTreeClass(custom2);
-
-    vCadTreeClass.inject({
-      rootElement: custom2.rootElement,
-      index: custom2.index,
-      url: vBaseUrl + vIframLink,
-    });
   }
+
+  // const custom1 = {
+  //   rootElement: `#searchContainer${index}`,
+  //   index: RootElementNum,
+  //   url: vBaseUrl + vSearchLink,
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   label: [vLable],
+  //   icons: ["icon", "statusIcon"],
+  //   changeIcons: ["iconSelected"],
+  //   iconsUrl: vBaseUrl,
+  // };
+  // const custom2 = {
+  //   rootElement: `#containterIframe${index}`,
+  //   index: RootElementNum,
+  //   url: vBaseUrl + vIframLink,
+  //   method: "GET",
+  // };
+
+  // const vSearchClass = new SearchClass(custom1);
+  // const vCadTreeClass = new CadTreeClass(custom2);
+
+  //   vCadTreeClass.inject({
+  //     rootElement: custom2.rootElement,
+  //     index: custom2.index,
+  //     url: vBaseUrl + vIframLink,
+  //   });
+  // }
 });
 
 function variableStyle(index) {

@@ -42,6 +42,7 @@ export class mainClass {
 
   constructor(options) {
     this.options = options;
+    this.functions = options.functions;
     this.label = options.label;
     this.icons = options.icons;
     this.index = options.index;
@@ -253,8 +254,8 @@ export class mainClass {
     const target = event.target;
 
     const vTr = target.getAttribute("data-id");
-    const vTrText = target.getAttribute("data-text");
-    const titleElement = document.querySelector(`title${this.index}`);
+    // const vTrText = target.getAttribute("data-text");
+    // const titleElement = document.querySelector(`title${this.index}`);
 
     const secondIcons = document.querySelectorAll(
       `.${this.changeIcons}[data-id='${vTr}']`
@@ -266,6 +267,7 @@ export class mainClass {
       target.classList.contains(`nodeText${this.index}`) ||
       target.classList.contains(`nodeContainer${this.index}`)
     ) {
+      eval(this.functions);
       const allNodeTextElements = document.querySelectorAll(
         `.nodeContainer${this.index}`
       );
@@ -287,26 +289,16 @@ export class mainClass {
       target
         .closest(`.nodeContainer${this.index}`)
         .classList.add(`selected${this.index}`);
-      document.getElementById(`searchInput${this.index}`).value = vTrText;
-      titleElement.innerHTML = `${vTrText}`;
+      // document.getElementById(`searchInput${this.index}`).value = vTrText;
+      // titleElement.innerHTML = `${vTrText}`;
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      // await new Promise((resolve) => setTimeout(resolve, 200));
 
-      document
-        .querySelectorAll(`.pagesTitle${this.index}.selecTitle${this.index}`)
-        .forEach((elem) => {
-          elem.click();
-        });
-
-      // if (window.innerWidth < 1440) {
-      //   setTimeout(() => {
-      //     const customContainer = document.querySelector(".customContainer");
-      //     if (customContainer) {
-      //       customContainer.classList.remove("showTree");
-      //       customContainer.classList.add("hideTree");
-      //     }
-      //   }, 300);
-      // }
+      // document
+      //   .querySelectorAll(`.pagesTitle${this.index}.selecTitle${this.index}`)
+      //   .forEach((elem) => {
+      //     elem.click();
+      //   });
     }
   }
 
