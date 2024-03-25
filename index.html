@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component Of Tree</title>
+  </head>
+  <body>
+    <div
+      id="componentsLoad"
+      WFFType="TreeView"
+      WFFNumber="1"
+      treeLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
+      searchLink="?FRAME_NAME=CADTREE.HIERARCHY.JSON&CADCODE="
+      viewLink="?FRAME_NAME=CADTREE.RIGHT_PAGES.JSON&ID="
+      labels="name"
+      baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
+    ></div>
+    <div
+      id="componentsLoad"
+      WFFType="TreeView"
+      WFFNumber="2"
+      treeLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
+      labels="name"
+      baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
+    ></div>
+    <script type="module" src="wffTreeView.js"></script>
+  </body>
+</html>
