@@ -4,28 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Component Of Tree</title>
+    <style>
+      .ComponentContainer {
+        display: flex;
+      }
+    </style>
   </head>
   <body>
-    <div
-      id="componentsLoad"
-      WFFType="TreeView"
-      WFFNumber="1"
-      treeLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
-      labels="name"
-      baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
-      onSelect="foo(target)"
-    ></div>
+    <div class="ComponentContainer">
+      <div
+        id="componentsLoad"
+        WFFType="TreeView"
+        WFFNumber="1"
+        treeLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
+        labels="name"
+        baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
+      ></div>
 
-    <script type="module" src="wffTreeView.js"></script>
-    <script>
-      function foo(target) {
-        alert(
-          `id: ${target.getAttribute("data-id")} \ntext: ${target.getAttribute(
-            "data-text"
-          )}`
-        );
-        console.log(target);
-      }
-    </script>
+      <div
+        WFFType="PaneView"
+        WFFNumber="1"
+        PaneLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
+        labels="name"
+        baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
+      ></div>
+    </div>
+
+    <script type="module" src="wffMainView.js"></script>
   </body>
 </html>

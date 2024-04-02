@@ -1,8 +1,16 @@
 import { HttpClass } from "./http.class.js";
 
 export class mainClass {
-  htmlULTpl = (id, value, icons, changeIcons, textTitle, hasChildren) => {
-    return `<li class="node${this.index} nodeTreeLi${
+  htmlULTpl = (
+    id,
+    value,
+    icons,
+    changeIcons,
+    textTitle,
+    hasChildren,
+    responseString
+  ) => {
+    return `<li class="node${this.index}  nodeTreeLi${
       this.index
     }" data-id="${id}" data-text="${textTitle}">
     <div class="nodeContainerParent${
@@ -21,13 +29,13 @@ export class mainClass {
   
     <div class="nodeContainer${
       this.index
-    }" data-id="${id}" data-text="${textTitle}">
+    }" ${responseString} data-id="${id}" data-text="${textTitle}">
       
       ${changeIcons}
       ${icons}
       <p class="nodeText${
         this.index
-      }" data-id="${id}" data-text="${textTitle}">${value}</p>
+      } ${responseString}" data-id="${id}" data-text="${textTitle}">${value}</p>
       </div>
       </div>
       <ul class="children${this.index} nodeTreeUl${
@@ -53,17 +61,9 @@ export class mainClass {
       this.inject(options, data);
     });
   }
-  //   <svg class="clearSelection"
-  //   id="clearSelection"
-  //   xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-  // <path fill="none" stroke="#000000" stroke-width="2" d="M10,4 C10,2.8954305 10.8954305,2 12,2 C13.1045695,2 14,2.8954305 14,4 L14,10 L20,10 L20,14 L4,14 L4,10 L10,10 L10,4 Z M4,14 L20,14 L20,22 L12,22 L4,22 L4,14 Z M16,22 L16,16.3646005 M8,22 L8,16.3646005 M12,22 L12,16.3646005"/>
-  // <title>
-  // მონიშნული მონაცემების გაუქმება</title>
-  // <text class="tooltiptext">
-  // მონიშვნის გაუქმება</text>
-  // </svg>
   inject(options, data) {
     const { rootElement } = options;
+
     const assembledHTML = `<div class="treeButtons${this.index}">
    
     <svg
@@ -234,13 +234,15 @@ export class mainClass {
         .join("");
 
       const hasChildren = item.children && item.children.length > 0;
+
       vHTML += this.htmlULTpl(
         item.id,
         labels,
         icons,
         chngIcons,
         item.text,
-        item.hasChildren
+        item.hasChildren,
+        this.responseBuild(item)
       );
 
       if (hasChildren) {
@@ -267,7 +269,11 @@ export class mainClass {
       target.classList.contains(`nodeText${this.index}`) ||
       target.classList.contains(`nodeContainer${this.index}`)
     ) {
-      eval(this.functions);
+      this.functions.split(";").forEach((func) => {
+        if (func.trim() !== "") {
+          eval(func);
+        }
+      });
       const allNodeTextElements = document.querySelectorAll(
         `.nodeContainer${this.index}`
       );
@@ -289,16 +295,6 @@ export class mainClass {
       target
         .closest(`.nodeContainer${this.index}`)
         .classList.add(`selected${this.index}`);
-      // document.getElementById(`searchInput${this.index}`).value = vTrText;
-      // titleElement.innerHTML = `${vTrText}`;
-
-      // await new Promise((resolve) => setTimeout(resolve, 200));
-
-      // document
-      //   .querySelectorAll(`.pagesTitle${this.index}.selecTitle${this.index}`)
-      //   .forEach((elem) => {
-      //     elem.click();
-      //   });
     }
   }
 
@@ -389,5 +385,11 @@ export class mainClass {
           });
       }
     }
+  }
+  responseBuild(data) {
+    const keys = Object.keys(data);
+
+    const responseString = keys.map((key) => `${key}="${data[key]}"`).join(" ");
+    return responseString;
   }
 }
