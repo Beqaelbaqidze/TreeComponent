@@ -59,7 +59,7 @@ mainRootElement.forEach((element, index) => {
       headers: {
         "Content-Type": "application/json",
       },
-      label: [vLable],
+      label: vLable.split(","),
       icons: ["icon", "statusIcon"],
       changeIcons: ["iconSelected"],
       iconsUrl: vBaseUrl,
@@ -89,7 +89,7 @@ paneRootElement.forEach((element, index) => {
     headers: {
       "Content-Type": "application/json",
     },
-    label: [vLable],
+    label: vLable.split(","),
     iconsUrl: vBaseUrl,
     vRootElement: mainRootElement ? `#container${index}` : "",
   };
@@ -228,20 +228,25 @@ function variableStyle(index) {
     height: 30px;
     align-items: center;
     cursor: pointer;
+    padding: 8px;
+    z-index:1;
   }
   .paneItem${index} svg{
     margin-right: 8px;
   }
-  .paneContainer${index}{
-    width: 300px;
-  }
+ .paneItem${index}:hover{
+  background-color: #e7eaf6;
+ }
   .paneNodeLabel${index}{
     cursor: pointer;
   }
   .paneItemContainer{
+    display: flex;
+    flex-direction: column;
     height: calc(100vh - 90px);
     overflow-y: scroll;
     margin-top: 48px;
+    width: auto;
   }
   .searchBtn${index}{
   cursor: pointer;
@@ -425,7 +430,17 @@ function variableStyle(index) {
   .sideBarShow${index}:hover{
   background-color: #0056b3;
   }
-  
+  .itemsContainer${index}{
+    display: flex;
+    padding: 12px;
+    
+  }
+  .itemsContainer${index} td{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 200px;
+  }
   .sideBarShow${index}::before{
   content: "";
   position: absolute;
@@ -585,6 +600,10 @@ function variableStyle(index) {
   left: 0;
   top: 0;
   position: relative;
+  }
+  .paneSelected${index}{
+    background-color: #a2a8d3;
+    color: white;
   }
   `;
 }

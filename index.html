@@ -6,7 +6,8 @@
     <title>Component Of Tree</title>
     <style>
       .ComponentContainer {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 2fr;
       }
     </style>
   </head>
@@ -25,7 +26,7 @@
         WFFType="PaneView"
         WFFNumber="1"
         PaneLink="?FRAME_NAME=CADTREE.BROWSER.JSON&PRNT_ID"
-        labels="name"
+        labels="name,text"
         baseUrl="https://office.napr.gov.ge/lr-test/bo/landreg-5/cadtree"
       ></div>
     </div>
