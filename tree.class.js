@@ -54,6 +54,7 @@ export class mainClass {
     this.label = options.label;
     this.icons = options.icons;
     this.index = options.index;
+    this.containerButtons = options.containerButtons;
     this.changeIcons = options.changeIcons;
     this.iconsUrl = options.iconsUrl;
     this.#httpClient = new HttpClass();
@@ -64,54 +65,59 @@ export class mainClass {
   inject(options, data) {
     const { rootElement } = options;
 
-    const assembledHTML = `<div class="treeButtons${this.index}">
-   
-    <svg
-      class="treeReload${this.index}"
-      id="treeReload${this.index}"
-      xmlns="http://www.w3.org/2000/svg"
-      height="24"
-      viewBox="0 -960 960 960"
-      width="24"
-    >
-      <path
-        d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"
-      />
-      <title>
-  მონიშნული მონაცემის განახლება</title>
-  <text class="tooltiptext${this.index}">
-  მონიშნული მონაცემის განახლება</text>
-    </svg>
-    <svg class="slidTree${
-      this.index
-    }" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m680-280-56-56 103-104H520v-80h207L624-624l56-56 200 200-200 200Zm-400 0L80-480l200-200 56 56-103 104h207v80H233l103 104-56 56Z"/>
-    <title>
-  დახურვა</title>
-  <text class="tooltiptext${this.index}">
-  დახურვა</text>
-    </svg></div><div class="customContainer${this.index}" id="customContainer${
-      this.index
-    }">${this.buildHTML(data)}</div>`;
+    const assembledHTML = `${
+      this.containerButtons !== "false"
+        ? ` <div class="treeButtons${this.index}">
+          <svg
+            class="treeReload${this.index}"
+            id="treeReload${this.index}"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 -960 960 960"
+            width="24"
+          >
+            <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+            <title>მონიშნული მონაცემის განახლება</title>
+            <text class="tooltiptext${this.index}">
+              მონიშნული მონაცემის განახლება
+            </text>
+          </svg>
+          <svg
+            class="slidTree${this.index}"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 -960 960 960"
+            width="24"
+          >
+            <path d="m680-280-56-56 103-104H520v-80h207L624-624l56-56 200 200-200 200Zm-400 0L80-480l200-200 56 56-103 104h207v80H233l103 104-56 56Z" />
+            <title>დახურვა</title>
+            <text class="tooltiptext${this.index}">დახურვა</text>
+          </svg>
+        </div>`
+        : ""
+    }${this.buildHTML(data)}`;
     const selector = rootElement || "body";
     document.querySelector(selector).innerHTML = assembledHTML;
 
     const customContainer = document.querySelector(
       `.customContainer${this.index}`
     );
-    document
-      .querySelector(`.slidTree${this.index}`)
-      .addEventListener("click", () => {
-        customContainer.classList.toggle(`hideSideTree${this.index}`);
-        document
-          .querySelector(`.treeReload${this.index}`)
-          .classList.toggle(`none${this.index}`);
+    if (this.containerButtons !== "false") {
+      document
+        .querySelector(`.slidTree${this.index}`)
+        .addEventListener("click", () => {
+          customContainer.classList.toggle(`hideSideTree${this.index}`);
+          document
+            .querySelector(`.treeReload${this.index}`)
+            .classList.toggle(`none${this.index}`);
 
-        document
-          .querySelector(`.treeButtons${this.index}`)
-          .classList.toggle(`changePosition${this.index}`);
-        document.querySelector(`.treeButtons${this.index}`).style.marginLeft =
-          "-4px";
-      });
+          document
+            .querySelector(`.treeButtons${this.index}`)
+            .classList.toggle(`changePosition${this.index}`);
+          document.querySelector(`.treeButtons${this.index}`).style.marginLeft =
+            "-4px";
+        });
+    }
 
     this.bindEvents();
   }
@@ -126,9 +132,11 @@ export class mainClass {
       `contextmenu${this.index}`,
       this.handleContextMenu.bind(this)
     );
-    document
-      .querySelector(`.treeReload${this.index}`)
-      .addEventListener("click", this.reloadNode.bind(this));
+    if (this.containerButtons !== "false") {
+      document
+        .querySelector(`.treeReload${this.index}`)
+        .addEventListener("click", this.reloadNode.bind(this));
+    }
   }
   handleContextMenu(event) {
     const existingContextMenu = document.querySelector(

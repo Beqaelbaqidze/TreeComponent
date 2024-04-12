@@ -70,7 +70,7 @@ export class PaneView {
   }
 
   buildPaneHtml(data) {
-    let vHTML = `<div class="paneItemContainer">`;
+    let vHTML = "";
     console.log(this.label);
     for (const item of data) {
       const labelsArr = this.label
@@ -86,7 +86,7 @@ export class PaneView {
         this.responseBuild(item)
       );
     }
-    vHTML += `</div>`;
+
     return vHTML;
   }
   responseBuild(data) {

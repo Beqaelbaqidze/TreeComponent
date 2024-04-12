@@ -5,15 +5,16 @@ let vLable;
 let vBaseUrl;
 let vTreeLink;
 let vPaneLink;
-
+let vExButtons;
+let vTreeContainerStyle;
+let vPaneContainerStyle;
 const mainRootElement = document.querySelectorAll('[WFFType="TreeView"]');
 const paneRootElement = document.querySelectorAll('[WFFType="PaneView"]');
-
 function mainHtml(tree, elemKey) {
   return `
     ${
       tree
-        ? `<div class="container${elemKey}" id="container${elemKey}"></div>`
+        ? `<div class="customContainer${elemKey}" id="customContainer${elemKey}"></div>`
         : ""
     }
   `;
@@ -23,7 +24,7 @@ function paneHtml(pane, elemKey) {
   return `
     ${
       pane
-        ? `<div class="paneContainer${elemKey}" id="paneContainer${elemKey}"></div>`
+        ? `<div class="paneItemContainer${elemKey}" id="paneItemContainer${elemKey}"></div>`
         : ""
     }
   `;
@@ -33,23 +34,26 @@ const styleElement = document.createElement("style");
 document.head.appendChild(styleElement);
 
 mainRootElement.forEach((element, index) => {
+  styleElement.innerHTML = mainStyle(index + 1);
   const RootElementNum = element.getAttribute("WFFNumber");
+  vTreeContainerStyle = element.getAttribute("treeContainerStyle");
 
   console.log(RootElementNum);
   index = RootElementNum;
   if (RootElementNum) {
     if (element.getAttribute("vStyle") !== "false") {
-      styleElement.innerHTML += variableStyle(index);
+      styleElement.innerHTML += treeStyle(index);
     }
 
     vLable = element.getAttribute("labels");
     vBaseUrl = element.getAttribute("baseUrl");
     vTreeLink = element?.getAttribute("treeLink");
+    vExButtons = element?.getAttribute("exButtons");
     element.classList.add("mainDivContainer" + index);
     element.innerHTML += mainHtml(vTreeLink, index);
-
+    console.log(vExButtons);
     const TreeView = {
-      rootElement: `#container${index}`,
+      rootElement: `#customContainer${index}`,
       index: RootElementNum,
       functions: element.getAttribute("onSelect")
         ? element.getAttribute("onSelect")
@@ -63,6 +67,7 @@ mainRootElement.forEach((element, index) => {
       icons: ["icon", "statusIcon"],
       changeIcons: ["iconSelected"],
       iconsUrl: vBaseUrl,
+      containerButtons: vExButtons,
     };
     const vMainClass = new mainClass(TreeView);
   }
@@ -70,10 +75,11 @@ mainRootElement.forEach((element, index) => {
 
 paneRootElement.forEach((element, index) => {
   const paneRootElementNum = element.getAttribute("WFFNumber");
-  if (!styleElement) {
-    if (element.getAttribute("vStyle") !== "false") {
-      styleElement.innerHTML += variableStyle(index);
-    }
+  vPaneContainerStyle = element.getAttribute("paneContainerStyle");
+  console.log(vPaneContainerStyle);
+
+  if (element.getAttribute("vStyle") !== "false") {
+    styleElement.innerHTML += paneStyle(index + 1);
   }
 
   index = paneRootElementNum;
@@ -82,7 +88,7 @@ paneRootElement.forEach((element, index) => {
   vPaneLink = element?.getAttribute("paneLink");
   element.innerHTML += paneHtml(vPaneLink, index);
   const paneView = {
-    rootElement: `#paneContainer${index}`,
+    rootElement: `#paneItemContainer${index}`,
     index: paneRootElementNum,
     url: vBaseUrl + vPaneLink,
     method: "GET",
@@ -91,13 +97,162 @@ paneRootElement.forEach((element, index) => {
     },
     label: vLable.split(","),
     iconsUrl: vBaseUrl,
-    vRootElement: mainRootElement ? `#container${index}` : "",
+    vRootElement: mainRootElement ? `#customContainer${index}` : "",
   };
   const vPaneClass = new PaneView(paneView);
 });
+function paneStyle(index) {
+  return `
+  .paneItem${index}{
+    display:flex;
+    height: 20px;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px;
+    z-index:1;
+  }
+  .paneItem${index} svg{
+    margin-right: 8px;
+  }
+ .paneItem${index}:hover{
+  background-color: #e7eaf6;
+ }
+  .paneNodeLabel${index}{
+    cursor: pointer;
+  }
+  .paneItemContainer${index}{
+    ${vPaneContainerStyle}
+    overflow-y: scroll;
+    resize: horizontal;
+  }`;
+}
+function treeStyle(index) {
+  return `
+  .shadowed-div${index}{
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  }
+  .customContainer${index}{
+  ${vTreeContainerStyle}
+  overflow-y: scroll;
+  resize: horizontal;
+  }
+  
+  .nodeTreeLi${index}{
+  margin-left: 12px;
+ 
+  }
+  .nodeContainerParent${index},
+  .nodeContainer${index}{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  }
+  .nodeContainer${index}{
+  width: 100%;
+  margin: 8px;
+  padding: 4px;
+  cursor: pointer;
+  }
+  .btnTree${index}{
+  padding: 8px;
+  display: flex;
+  background-color: inherit;
+  border: 0;
+  cursor: pointer;
+  z-index: 1;
+  }
+  .arrow${index}{
+  z-index: -1;
+  }
+  svg.disabled{
+  opacity: 0.5; 
+  pointer-events: none; 
+  }
 
-function variableStyle(index) {
-  return `html,
+  .button-container${index}{
+  display: flex;
+  }
+ 
+  .button-container${index} button{
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s ease;
+  border: none;
+  padding: 2px 4px;
+  border-start-end-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .button-container${index} button:hover{
+  background-color: #6c9eee;
+  color: #fff; 
+  }
+  
+  .treeButtons${index}{
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  margin-right: 36px;
+  }
+  .tooltip${index}{
+  position: relative;
+  display: inline-block;
+  }
+  
+  .tooltip${index} .tooltiptext${index}{
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.6s;
+  }
+  
+  .tooltip${index}:hover .tooltiptext${index}{
+  visibility: visible;
+  opacity: 1;
+  }
+  
+  .treeButtons${index} svg{
+  margin-left: 12px;
+  cursor: pointer;
+  }
+  
+  .treeReload${index}{
+  cursor: pointer;
+  }
+  .treeButtons${index} svg:hover{
+  fill: #007bff;
+  }
+  * {
+  scrollbar-width: thin;
+  scrollbar-color: grey;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+}
+  .parentNode${index}{
+    margin: 0 -8px;
+    }
+  `;
+}
+function mainStyle(index) {
+  return `
+    html,
     body,
     div,
     span,
@@ -220,264 +375,7 @@ function variableStyle(index) {
     border-collapse: collapse;
     border-spacing: 0;
     }
-  .shadowed-div${index}{
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-  }
-  .paneItem${index}{
-    display:flex;
-    height: 30px;
-    align-items: center;
-    cursor: pointer;
-    padding: 8px;
-    z-index:1;
-  }
-  .paneItem${index} svg{
-    margin-right: 8px;
-  }
- .paneItem${index}:hover{
-  background-color: #e7eaf6;
- }
-  .paneNodeLabel${index}{
-    cursor: pointer;
-  }
-  .paneItemContainer{
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 90px);
-    overflow-y: scroll;
-    margin-top: 48px;
-    width: auto;
-  }
-  .searchBtn${index}{
-  cursor: pointer;
-  margin-left: 16px;
-  border: 0;
-  border-radius: 4px;
-  background: #2c4cc9;
-  height: 56px;
-  padding: 10px 16px;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  }
-  .mainDivContainer${index}{
-  padding: 12px 24px;
-  height: 100%;
-  background: #fafafa;
-  }
-  .searchDiv${index}{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  }
-  .customContainer${index}{
-  position: absolute;
-  top: 100px;
-  padding: 8px;
-  border-radius: 2px;
-  background: #fafafa;
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.25);
-  overflow-y: scroll;
-  scroll-behavior: smooth;
-  max-width: 100%;
-  right: 23px;
-  left: 24px;
-  bottom: 16px;
-  z-index: 1;
-  transition: left 0.5s ease;
-  }
-  .nodeTreeLi${index}{
-  margin-left: 12px;
-  }
-  .nodeContainerParent${index},
-  .nodeContainer${index}{
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  }
-  .nodeContainer${index}{
-  width: 100%;
-  margin: 8px;
-  padding: 4px;
-  cursor: pointer;
-  }
-  .btnTree${index}{
-  padding: 8px;
-  display: flex;
-  background-color: inherit;
-  border: 0;
-  cursor: pointer;
-  z-index: 1;
-  }
-  .arrow${index}{
-  z-index: -1;
-  }
-  svg.disabled{
-  opacity: 0.5; 
-  pointer-events: none; 
-  }
-  .containterIframe${index}{
-  margin-left: 48px;
-  width: calc(100% - 48px);
-  z-index: -1;
-  }
-  .button-container${index}{
-  display: flex;
-  }
-  .paneDivContainer${index}{
-    overflow-y: scroll;
-    height: calc(100vh - 100px);
-    margin-top: 48px;
-    width: 20%;
-  }
-  .paneText${index}{
-    margin-bottom: 16px;
-  }
-  .button-container${index} button{
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #ccc; 
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
-  transition: background-color 0.3s ease;
-  border: none;
-  padding: 2px 4px;
-  border-start-end-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .button-container${index} button:hover{
-  background-color: #6c9eee;
-  color: #fff; 
-  }
-  
-  .treeButtons${index}{
-  display: flex;
-  align-items: center;
-  padding: 4px 0;
-  margin-right: 36px;
-  }
-  .tooltip${index}{
-  position: relative;
-  display: inline-block;
-  }
-  
-  .tooltip${index} .tooltiptext${index}{
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: white;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.6s;
-  }
-  
-  .tooltip${index}:hover .tooltiptext${index}{
-  visibility: visible;
-  opacity: 1;
-  }
-  
-  .treeButtons${index} svg{
-  margin-left: 12px;
-  cursor: pointer;
-  }
-  
-  .treeReload${index}{
-  cursor: pointer;
-  }
-  .treeButtons${index} svg:hover{
-  fill: #007bff;
-  }
-  .slidTree${index}{
-  cursor: pointer;
-  fill: #555; 
-  transition: fill 0.3s ease; 
-  width: 24px;
-  height: 24px;
-  transition: transform 0.5s ease-in-out;
-  }
-  .slidTree${index}:hover{
-  fill: #007bff;
-  }
-  .sideBarShow${index}{
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  position: absolute;
-  left: 6px;
-  top: 124px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 36px;
-  margin: 0;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  outline: none;
-  padding: 0;
-  font-size: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  }
-  
-  .sideBarShow${index}:hover{
-  background-color: #0056b3;
-  }
-  .itemsContainer${index}{
-    display: flex;
-    padding: 12px;
-    
-  }
-  .itemsContainer${index} td{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    width: 200px;
-  }
-  .sideBarShow${index}::before{
-  content: "";
-  position: absolute;
-  
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  width: 12px;
-  height: 12px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: #fff;
-  border-left: none;
-  border-top: none;
-  }
-  
-  @media (min-width: 768px){
-  .button-container${index}{
-   z-index: 1;
-  }
-  .customContainer${index}{
-   position: relative;
-   top: 0;
-   right: 0;
-   left: 0;
-   overflow-y: scroll;
-   height: calc(100vh - 100px);
-   margin-right: 12px;
-  }
-  .section${index}{
-   display: flex;
-  }
-  .containterIframe${index}{
-   margin: 0;
-   z-index: 0;
-  }
-  }
-  .close${index}{
+.close${index}{
   color: #aaa;
   float: right;
   font-size: 28px;
@@ -593,9 +491,7 @@ function variableStyle(index) {
   .hideSideTree${index} ul{
   display: none;
   }
-  .parentNode${index}{
-  margin: 0 -8px;
-  }
+ 
   .changePosition${index}{
   left: 0;
   top: 0;
@@ -604,6 +500,5 @@ function variableStyle(index) {
   .paneSelected${index}{
     background-color: #a2a8d3;
     color: white;
-  }
-  `;
+  }`;
 }
