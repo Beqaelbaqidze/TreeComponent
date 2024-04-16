@@ -223,21 +223,27 @@ export class mainClass {
       const labels = this.label.map((label) => item[label]).join(", ");
       const chngIcons = this.changeIcons
         .map(
-          (
-            chngIcons
-          ) => `<svg class= "none${this.index} nodeChangeSvg${this.index} ${chngIcons}" data-id="${item.id}" style="width: 18px; margin-right: 8px;height: 18px; z-index: -1; xmlns="http://www.w3.org/2000/svg">
+          (chngIcons) =>
+            `${
+              chngIcons
+                ? `<svg class= "none${this.index} nodeChangeSvg${this.index} ${chngIcons}" data-id="${item.id}" style="width: 18px; margin-right: 8px;height: 18px; z-index: -1; xmlns="http://www.w3.org/2000/svg">
       <image href="${this.iconsUrl}${item[chngIcons]}" class="nodeIcon${this.index} ${chngIcons}" data-id="${item.id}" style="width: 18px; height: 18px; cursor: pointer;" />
       </svg>`
+                : ""
+            }`
         )
         .join("");
 
       const icons = this.icons
         .map(
-          (
-            icons
-          ) => `<svg class= "${icons} nodeSvg${this.index}" data-id="${item.id}" style="width: 18px; margin-right: 8px;height: 18px; z-index: -1;xmlns="http://www.w3.org/2000/svg">
+          (icons) =>
+            `${
+              icons
+                ? `<svg class= "${icons} nodeSvg${this.index}" data-id="${item.id}" style="width: 18px; margin-right: 8px;height: 18px; z-index: -1;xmlns="http://www.w3.org/2000/svg">
       <image href="${this.iconsUrl}${item[icons]}" class="nodeIcon${this.index} ${icons}" data-id="${item.id}" style="width: 18px; height: 18px; cursor: pointer;" />
       </svg>`
+                : ""
+            }`
         )
         .join("");
 
@@ -298,8 +304,13 @@ export class mainClass {
       allNodeTextElements.forEach((element) => {
         element.classList.remove(`selected${this.index}`);
       });
-      secondIcons.forEach((icon) => icon.classList.remove(`none${this.index}`));
-      sameIcons.forEach((icon) => icon.classList.add(`none${this.index}`));
+      secondIcons?.forEach((icon) =>
+        icon.classList.remove(`none${this.index}`)
+      );
+      if (secondIcons) {
+        sameIcons.forEach((icon) => icon.classList.add(`none${this.index}`));
+      }
+
       target
         .closest(`.nodeContainer${this.index}`)
         .classList.add(`selected${this.index}`);

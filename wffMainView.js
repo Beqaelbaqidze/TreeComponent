@@ -136,7 +136,13 @@ function treeStyle(index) {
   overflow-y: scroll;
   resize: horizontal;
   }
-  
+  .customContainer${index} p{
+  font-family: "NotoSansGeorgianMedium";
+    font-size: 16px;
+    -moz-font-feature-settings: 'case';
+    -webkit-font-feature-settings: 'case';
+    font-feature-settings: 'case' on;
+  }
   .nodeTreeLi${index}{
   margin-left: 12px;
  
